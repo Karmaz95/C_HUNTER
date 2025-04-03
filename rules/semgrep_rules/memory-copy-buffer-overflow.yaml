@@ -1,0 +1,30 @@
+# It detects buffer overflows caused by unsafe memory copy operations in C/C++.
+#
+# The rule captures:
+# 1. Common memory copy functions (`memcpy`, `memmove`, `strcpy`, `strncpy`, etc.).
+# 2. Ensures no explicit size checks are performed before copying.
+# 3. Matches cases where these functions copy data into a fixed-size destination buffer.
+#
+# The rule is useful for detecting common CWE-120 (Buffer Copy Without Checking Size).
+rules:
+  - id: memory-copy-buffer-overflow
+    languages:
+      - c
+      - cpp
+    severity: ERROR
+    message: |
+      Potential buffer overflow: Ensure the destination buffer can always hold the copied data.
+    pattern-either:
+      - pattern: memcpy(...)
+      - pattern: memmove(...)
+      - pattern: strcpy(...)
+      - pattern: strncpy(...)
+      - pattern: wcscpy(...)
+      - pattern: wcsncpy(...)
+      - pattern: bcopy(...)
+      - pattern: CopyMemory(...)
+      - pattern: RtlCopyMemory(...)
+      - pattern: RtlMoveMemory(...)
+    metadata:
+      cwe: "CWE-120: Buffer Copy Without Checking Size of Input"
+      description: "Detects unsafe use of memory copy functions that may lead to buffer overflows."

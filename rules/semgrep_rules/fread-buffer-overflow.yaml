@@ -1,0 +1,23 @@
+# This Semgrep rule is named fread-buffer-overflow.
+# It detects a potential buffer overflow vulnerability in C/C++ code where:
+# 1. A fixed-size two-dimensional array of type 'uchar' is declared.
+# 2. A variable is assigned the return value of read_dword(), which indicates untrusted input.
+# 3. The variable is used (after casting to size_t) as the count argument in a call to fread(),
+#    potentially reading more data than the allocated array can hold.
+#
+# The ellipses (...) are used as wildcards to allow matching of code with additional tokens or lines.
+rules:
+- id: fread-buffer-overflow
+  patterns:
+  # The pattern to match code that might be vulnerable.
+    - pattern: |
+        uchar $BUFFER[...][...];
+        ...
+        $VAR = read_dword(...);
+        ...
+        fread($BUFFER, (size_t)$VAR, ..., ...);
+  message: "Potential buffer overflow: `fread` using an unchecked user-controlled variable (`$VAR`) as the size argument."
+  languages:
+    - c
+    - cpp
+  severity: ERROR

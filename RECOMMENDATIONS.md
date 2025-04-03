@@ -1,0 +1,78 @@
+# RECOMMENDATIONS:
+- Implement non-executable memory for Stack and Heap
+- Enable stack canaries (-fstack-protector-strong or -fstack-protector-all)
+- Implement Address Space Layout Randomization (ASLR)
+- Enable Control Flow Integrity (CFI) if available in your compiler
+- Replace unsafe functions with safer alternatives (e.g., strncpy instead of strcpy)
+- Use strto* functions instead of ato* functions
+- Consider safe string libraries like safestringlib
+- Use Microsoft's safe string functions (*_s variants) on Windows
+- Implement proper bounds checking for all array operations
+- Validate array indices before use
+- Never trust user input for array indexing
+- Use container classes with built-in bounds checking where possible
+- Utilize compiler built-in intrinsics like __builtin_add/sub/mul_overflow()
+- Consider safe arithmetic libraries for critical code
+- Eliminate signed integer parameters when unnecessary
+- Enable compiler warnings for uninitialized variables (-Wuninitialized)
+- Initialize all variables at declaration
+- Use strong typing and avoid type confusion
+- Consider tagged unions for heterogeneous data
+- Use AddressSanitizer (ASan) for detecting memory errors
+- Use UndefinedBehaviorSanitizer (UBSan) with -fsanitize-minimal-runtime for production
+- Use ThreadSanitizer (TSan) for detecting race conditions
+- Use MemorySanitizer (MSan) for detecting uninitialized memory reads
+- Validate and sanitize all user inputs
+- Check buffer sizes before operations
+- Verify that integer values are within expected ranges
+- Add assertions for invariants and preconditions
+- Implement range checks for all array accesses
+- Verify pointer validity before dereferencing
+- Consider using memory-safe languages when possible
+- Use smart pointers instead of raw pointers in C++
+- Leverage static analysis tools to identify potential vulnerabilities
+- Handle all error conditions explicitly
+- Avoid exposing sensitive information in error messages
+- Ensure resources are properly released on error paths
+- Regularly update dependencies to address known vulnerabilities
+- Conduct regular code reviews focused on security
+- Fix identified issues promptly and thoroughly
+
+
+# CWE TABLE:
+- Buffer Copy without Checking Size of Input — CWE-120
+- Incorrect Calculation of Buffer Size — CWE-131
+- Uncontrolled Format String — CWE-134
+- Off by One — CWE-193
+- Improper Restriction of Operations within the Bounds of a Memory Buffer — CWE-119
+- Integer Overflow or Wraparound — CWE-190
+- Untrusted Search Path — CWE-426
+- Use of Hard-coded Credentials — CWE-798
+- Improper Locking — CWE-667
+- Use After Free — CWE-416
+- Double Free — CWE-415
+- Uninitialized Data Access — CWE-457
+- Race Conditions — CWE-362
+- Type Confusion — CWE-843
+- Information Disclosure — CWE-200
+- Out-of-Bounds Write — CWE-787
+- Out-of-Bounds Read — CWE-125
+- NULL Pointer Dereference — CWE-476
+- Access of Uninitialized Pointer — CWE-824
+- Use of Inherently Dangerous Function — CWE-242
+- Unchecked Return Value — CWE-252
+- Incorrect Check of Function Return Value — CWE-253
+- Improper Handling of Unexpected Data Type — CWE-241
+- Improper Clearing of Heap Memory Before Release — CWE-244
+- Execution with Unnecessary Privileges — CWE-250
+- Information Exposure Through an Error Message — CWE-209
+- TOCTOU (Time-of-Check to Time-of-Use) Race Condition — CWE-367
+- Improper Handling of Parameters — CWE-233
+
+
+# REFERENCES:
+- [Secure Coding in C and C++ by Robert Seacord](https://insights.sei.cmu.edu/documents/1312/2005_009_001_52710.pdf)
+- [EDK II Secure Code Review Guide](https://tianocore-docs.github.io/EDK_II_Secure_Code_Review_Guide/draft/general_guidelines_for_secure_code_review.html)
+- [Free Course: Developing Secure Software (LFD121)](https://training.linuxfoundation.org/training/developing-secure-software-lfd121/)
+- [The Power of Ten – Rules for Developing Safety Critical Code by Gerard J. Holzmann](https://spinroot.com/gerard/pdf/P10.pdf)
+- [OpenSecurityTraining2 Vulnerabilities 1001 & 1002](https://p.ost2.fyi/)

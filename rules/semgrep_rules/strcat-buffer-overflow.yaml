@@ -1,0 +1,22 @@
+# It detects buffer overflows caused by unsafe use of strcat in C/C++.
+#
+# The rule captures:
+# 1. Usage of `strcat` or `strncat` where no explicit size check is performed.
+# 2. `strcat` appends a string without checking if the destination buffer is large enough.
+# 3. Matches cases where `strcat` or `strncat` could overflow a buffer.
+#
+# This rule detects CWE-120 (Buffer Copy Without Checking Size of Input).
+rules:
+  - id: strcat-buffer-overflow
+    languages:
+      - c
+      - cpp
+    severity: ERROR
+    message: |
+      Potential buffer overflow: `strcat` appends data to a fixed-size buffer without verifying space.
+    pattern-either:
+      - pattern: strcat($BUFFER, $SRC);
+      - pattern: strncat($BUFFER, $SRC, ...);
+    metadata:
+      cwe: "CWE-120: Buffer Copy Without Checking Size of Input"
+      description: "Detects unsafe use of `strcat` and `strncat` that may lead to buffer overflow."

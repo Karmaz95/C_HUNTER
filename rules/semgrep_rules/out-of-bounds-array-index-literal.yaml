@@ -1,0 +1,17 @@
+# This Semgrep rule detects a potential out-of-bounds array index.
+# It looks for code where:
+# 1. An array is declared with a literal size (captured as $X).
+# 2. Later, an assignment is made using the same literal ($X) as the index.
+# Using the declared size as an index is likely out-of-bounds since valid indices are 0 to size-1.
+rules:
+- id: out-of-bounds-array-index-literal
+  message: "Potential out-of-bounds array index using the same literal as the declared array size."
+  severity: ERROR
+  languages:
+    - c
+    - cpp
+  patterns:
+    - pattern: |
+        $TYPE $ARRAY[$X];
+        ...
+        $ARRAY[$X] = $VALUE;

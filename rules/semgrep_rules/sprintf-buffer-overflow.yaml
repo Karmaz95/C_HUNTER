@@ -1,0 +1,23 @@
+# It detects buffer overflows caused by unsafe use of sprintf in C/C++.
+#
+# The rule captures:
+# 1. Usage of `sprintf` that writes into a fixed-size buffer.
+# 2. `sprintf` does NOT perform bounds checking, which can lead to overflows.
+# 3. Matches cases where `sprintf` is used instead of safer alternatives.
+#
+# This rule detects CWE-120 (Buffer Copy Without Checking Size of Input).
+rules:
+  - id: sprintf-buffer-overflow
+    languages:
+      - c
+      - cpp
+    severity: ERROR
+    message: |
+      Potential buffer overflow: `sprintf` writes to a fixed-size buffer without bounds checking.
+    pattern: |
+      char $BUFFER[...];
+      ...
+      sprintf($BUFFER, ...);
+    metadata:
+      cwe: "CWE-120: Buffer Copy Without Checking Size of Input"
+      description: "Detects unsafe use of `sprintf` that may lead to buffer overflow. Use `snprintf` instead."

@@ -1,0 +1,23 @@
+# It detects buffer overflows caused by unsafe use of scanf in C/C++.
+#
+# The rule captures:
+# 1. Usage of `scanf`, `sscanf`, or `fscanf` without a field width specifier.
+# 2. These functions read input into a fixed-size buffer without limiting input size.
+# 3. Matches cases where user input is read directly into a buffer without specifying a safe length.
+#
+# This rule detects CWE-120 (Buffer Copy Without Checking Size of Input).
+rules:
+  - id: scanf-buffer-overflow
+    languages:
+      - c
+      - cpp
+    severity: ERROR
+    message: |
+      Potential buffer overflow: `scanf` reads input into a fixed-size buffer without specifying a length.
+    pattern-either:
+      - pattern: scanf("%s", $BUFFER);
+      - pattern: fscanf($STREAM, "%s", $BUFFER);
+      - pattern: sscanf($SRC, "%s", $BUFFER);
+    metadata:
+      cwe: "CWE-120: Buffer Copy Without Checking Size of Input"
+      description: "Detects unsafe use of `scanf`, `sscanf`, and `fscanf` where input is read into a buffer without length restriction."

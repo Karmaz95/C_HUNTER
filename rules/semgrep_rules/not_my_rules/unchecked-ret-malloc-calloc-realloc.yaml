@@ -1,0 +1,64 @@
+rules:
+  - id: raptor-unchecked-ret-malloc-calloc-realloc
+    metadata:
+      author: Marco Ivaldi <raptor@0xdeadbeef.info>
+      references:
+        - https://cwe.mitre.org/data/definitions/252
+        - https://cwe.mitre.org/data/definitions/690
+        - https://g.co/kgs/PCHQjJ
+        - https://github.com/struct/mms
+        - https://www.sei.cmu.edu/downloads/sei-cert-c-coding-standard-2016-v01.pdf
+      confidence: MEDIUM
+      # NOTE: custom wrappers are not covered.
+    message: >-
+      The software does not check the return value from a method or
+      function, which can prevent it from detecting unexpected states and
+      conditions.
+    severity: WARNING
+    languages:
+      - c
+      - cpp
+    patterns:
+      - pattern-either:
+        - pattern: $RET = $FUN(...)
+        - pattern: $RET = ($CAST)$FUN(...)
+      - metavariable-pattern:
+          metavariable: $FUN
+          pattern-either:
+            - pattern: malloc
+            - pattern: calloc
+            - pattern: realloc
+            - pattern: reallocf
+            - pattern: valloc
+            - pattern: aligned_alloc
+            - pattern: strdup
+            - pattern: strndup
+      - pattern-not-inside: |
+          $FUN(...);
+          ...
+          if (<... $RET == NULL ...>) ...
+      - pattern-not-inside: |
+          $FUN(...);
+          ...
+          if (<... NULL == $RET ...>) ...
+      - pattern-not-inside: |
+          $FUN(...);
+          ...
+          if (<... $RET != NULL ...>) ...
+      - pattern-not-inside: |
+          $FUN(...);
+          ...
+          if (<... NULL != $RET ...>) ...
+      - pattern-not-inside: |
+          $FUN(...);
+          ...
+          if (<... !$RET ...>) ...
+      - pattern-not-inside: |
+          $FUN(...);
+          ...
+          if (<... $RET ...>) ...
+      - pattern-not-inside: <... $ALLOC == NULL ...>
+      - pattern-not-inside: <... NULL == $ALLOC ...>
+      - pattern-not-inside: <... $ALLOC != NULL ...>
+      - pattern-not-inside: <... NULL != $ALLOC ...>
+      - pattern-not-inside: <... !$ALLOC ...>

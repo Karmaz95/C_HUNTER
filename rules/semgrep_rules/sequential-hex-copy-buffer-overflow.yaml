@@ -1,0 +1,27 @@
+# This Semgrep rule is named sequential-hex-copy-buffer-overflow.
+# It detects a potential buffer overflow vulnerability when a loop sequentially
+# copies hex data into a fixed-size destination buffer without verifying that
+# the destination buffer is large enough to hold the copied data.
+# The rule is generic and can match similar patterns in C/C++ code.
+rules:
+- id: sequential-hex-copy-buffer-overflow
+  # Message displayed when the vulnerability is detected.
+  message: "Potential buffer overflow: loop sequentially copies hex data into a fixed-size buffer without verifying destination bounds."
+  # The severity level assigned to this issue.
+  severity: ERROR
+  # Applicable programming languages.
+  languages:
+    - c
+    - cpp
+  # The pattern to match code that might be vulnerable.
+  patterns:
+    - pattern: |
+        while(1) {
+          if ($IDX >= strnlen($HEX, ...))
+            break;
+          *$DST++ = CONVERT_HEX($HEX[$IDX]) << ... | CONVERT_HEX($HEX[$IDX+...]);
+          $IDX += ...;
+        }
+  metadata:
+    cve: CVE-2021-21574
+    description: "Detects a loop that sequentially copies hex data into a buffer without checking that the destination buffer is large enough."
